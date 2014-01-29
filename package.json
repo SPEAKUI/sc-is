@@ -1,0 +1,14 @@
+{
+  "name": "sc-is",
+  "version": "0.0.0",
+  "description": "Is helper (number, boolean etc)",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "David Tsuji",
+  "license": "MIT",
+  "devDependencies": {
+    "should": "~2.1.0"
+  }
+}
