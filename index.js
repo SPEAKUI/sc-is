@@ -1,8 +1,10 @@
 var type = require( "./ises/type" ),
   is = {
     a: {},
+    an: {},
     not: {
-      a: {}
+      a: {},
+      an: {}
     }
   };
 
@@ -13,13 +15,13 @@ var ises = {
   "date": [ "date", type( "date" ) ],
   "function": [ "function", "func", "fn", type( "function" ) ],
   "null": [ "null", type( "null" ) ],
-  "number": [ "number", "integer", type( "number" ) ],
+  "number": [ "number", "integer", "int", type( "number" ) ],
   "object": [ "object", type( "object" ) ],
   "regexp": [ "regexp", type( "regexp" ) ],
   "string": [ "string", type( "string" ) ],
   "undefined": [ "undefined", type( "undefined" ) ],
   "empty": [ "empty", require( "./ises/empty" ) ],
-  "nullorundefined": [ "nullOrUndefined", require( "./ises/nullorundefined" ) ]
+  "nullorundefined": [ "nullOrUndefined", "nullorundefined", require( "./ises/nullorundefined" ) ]
 }
 
 Object.keys( ises ).forEach( function ( key ) {
@@ -28,8 +30,8 @@ Object.keys( ises ).forEach( function ( key ) {
     fn = ises[ key ][ ises[ key ].length - 1 ];
 
   methods.forEach( function ( methodKey ) {
-    is[ methodKey ] = is.a[ methodKey ] = fn;
-    is.not[ methodKey ] = is.not.a[ methodKey ] = function () {
+    is[ methodKey ] = is.a[ methodKey ] = is.an[ methodKey ] = fn;
+    is.not[ methodKey ] = is.not.a[ methodKey ] = is.not.an[ methodKey ] = function () {
       return fn.apply( this, arguments ) ? false : true;
     }
   } );

@@ -1,119 +1,121 @@
 var is = require( ".." ),
   should = require( "should" );
 
+var noop = function () {},
+  args;
+
+( function () {
+  args = arguments;
+} )();
+
+var data = [ {
+  name: "arguments",
+  valid: [ args ],
+  invalid: [
+    [],
+    [ 1 ]
+  ]
+}, {
+  name: "array",
+  valid: [
+    [],
+    [ 1 ]
+  ],
+  invalid: [ {} ]
+}, {
+  name: "boolean",
+  valid: [ true, false ],
+  invalid: [ 1, 0, null, undefined, "true", "false" ]
+}, {
+  name: "date",
+  valid: [ new Date() ],
+  invalid: [ "29 Aug 1997", new Date().getTime() ]
+}, {
+  name: [ "function", "fn", "func" ],
+  valid: [ describe, noop, Object ],
+  invalid: [ this, {},
+    []
+  ]
+}, {
+  name: "null",
+  valid: [ null ],
+  invalid: [ 0, -1, false, undefined ]
+}, {
+  name: [ "number", "integer", "int" ],
+  valid: [ 0, 1, -1, 1.2, -1.2 ],
+  invalid: [ "1" ]
+}, {
+  name: "object",
+  valid: [ {},
+    this
+  ],
+  invalid: [ noop, /^/, new Date(), [], args, Object ]
+}, {
+  name: "regexp",
+  valid: [ /^/, new RegExp( "^" ) ],
+  invalid: [ "/^/", null, undefined ]
+}, {
+  name: "string",
+  valid: [ "", "a" ],
+  invalid: [ true, 1, undefined ]
+}, {
+  name: "undefined",
+  valid: [ undefined, void 0 ],
+  invalid: [ "undefined", null, "", -1, 0, false ]
+}, {
+  name: "empty",
+  valid: [ -1, 0, false, "", undefined, null, void 0, [], {} ],
+  invalid: [ "null", "undefined", [ 1 ], noop ]
+}, {
+  name: [ "nullOrUndefined", "nullorundefined" ],
+  valid: [ null, undefined, void 0 ],
+  invalid: [ "null", "undefined", 0, -1, false ]
+} ]
+
 describe( "is", function () {
 
-  it( "should check types", function () {
+  data.forEach( function ( obj ) {
 
-    is.arguments( arguments ).should.be.true;
-    is.a.arguments( arguments ).should.be.true;
-    is.arguments( [] ).should.be.false;
-    is.not.arguments( [] ).should.be.true;
-    is.not.a.arguments( [] ).should.be.true;
-    is.arguments().should.be.false;
+    var name = Array.isArray( obj.name ) ? obj.name : [ obj.name ];
 
-    is.array( [] ).should.be.true;
-    is.a.array( [] ).should.be.true;
-    is.array( {} ).should.be.false;
-    is.array().should.be.false;
+    name.forEach( function ( nameKey ) {
 
-    is.boolean( true ).should.be.true;
-    is.a.boolean( true ).should.be.true;
-    is.boolean( false ).should.be.true;
-    is.boolean( 1 ).should.be.false;
-    is.not.boolean( 1 ).should.be.true;
-    is.not.a.boolean( 1 ).should.be.true;
-    is.boolean().should.be.false;
+      it( "should return **true** when valid values are passed to _" + name + "_", function () {
 
-    is.date( new Date() ).should.be.true;
-    is.a.date( new Date() ).should.be.true;
-    is.date( "29 aug 1997" ).should.be.false;
-    is.date().should.be.false;
+        obj.valid.forEach( function ( val ) {
+          is[ nameKey ]( val ).should.be.true;
+          is.a[ nameKey ]( val ).should.be.true;
+          is.an[ nameKey ]( val ).should.be.true;
+          is.not[ nameKey ]( val ).should.be.false;
+          is.not.a[ nameKey ]( val ).should.be.false;
+          is.not.an[ nameKey ]( val ).should.be.false;
+        } );
+      } );
 
-    is.fn( function () {} ).should.be.true;
-    is.a.fn( function () {} ).should.be.true;
-    is.fn( Object ).should.be.true;
-    is.fn( describe ).should.be.true;
-    is.fn( this ).should.be.false;
-    is.not.fn( this ).should.be.true;
-    is.not.a.fn( this ).should.be.true;
-    is.fn().should.be.false;
+      it( "should return **false** when invalid values are passed to _" + name + "_", function () {
+        obj.invalid.forEach( function ( val ) {
 
-    is.null( null ).should.be.true;
-    is.a.null( null ).should.be.true;
-    is.null( undefined ).should.be.false;
-    is.not.null( undefined ).should.be.true;
-    is.not.a.null( undefined ).should.be.true;
-    is.null( 0 ).should.be.false;
-    is.null( -1 ).should.be.false;
-    is.null( false ).should.be.false;
-    is.null().should.be.false;
+          is[ nameKey ]( val ).should.be.false;
+          is.a[ nameKey ]( val ).should.be.false;
+          is.an[ nameKey ]( val ).should.be.false;
+          is.not[ nameKey ]( val ).should.be.true;
+          is.not.a[ nameKey ]( val ).should.be.true;
+          is.not.an[ nameKey ]( val ).should.be.true;
 
-    is.number( 1 ).should.be.true;
-    is.a.number( 1 ).should.be.true;
-    is.number( "1" ).should.be.false;
-    is.not.number( "1" ).should.be.true;
-    is.not.a.number( "1" ).should.be.true;
-    is.number().should.be.false;
+          if ( !/empty|undefined/i.test( nameKey ) ) {
+            is[ nameKey ]().should.be.false;
+            is.a[ nameKey ]().should.be.false;
+            is.an[ nameKey ]().should.be.false;
+            is.not[ nameKey ]().should.be.true;
+            is.not.a[ nameKey ]().should.be.true;
+            is.not.an[ nameKey ]().should.be.true;
+          }
 
-    is.object( {} ).should.be.true;
-    is.a.object( {} ).should.be.true;
-    is.object( this ).should.be.true;
-    is.object().should.be.false;
-    is.not.object().should.be.true;
-    is.not.a.object().should.be.true;
+        } );
 
-    is.regexp( new RegExp() ).should.be.true;
-    is.a.regexp( new RegExp() ).should.be.true;
-    is.regexp( /^/ ).should.be.true;
-    is.regexp().should.be.false;
-    is.not.regexp().should.be.true;
-    is.not.a.regexp().should.be.true;
+      } );
 
-    is.string( "a" ).should.be.true;
-    is.a.string( "a" ).should.be.true;
-    is.string( "" ).should.be.true;
-    is.string( true ).should.be.false;
-    is.not.string( true ).should.be.true;
-    is.not.a.string( true ).should.be.true;
-    is.string().should.be.false;
-
-    is.undefined( undefined ).should.be.true;
-    is.a.undefined( undefined ).should.be.true;
-    is.undefined().should.be.true;
-    is.undefined( "undefined" ).should.be.false;
-    is.not.undefined( "undefined" ).should.be.true;
-    is.not.a.undefined( "undefined" ).should.be.true;
-    is.undefined( null ).should.be.false;
-    is.undefined( false ).should.be.false;
-    is.undefined( 0 ).should.be.false;
-    is.undefined( -1 ).should.be.false;
-
-  } );
-
-  it( "should check if a value is empty", function () {
-
-    is.empty( null ).should.be.true;
-    is.empty( undefined ).should.be.true;
-    is.empty( "undefined" ).should.be.false;
-    is.empty( 0 ).should.be.true;
-    is.empty( -1 ).should.be.true;
-    is.empty( false ).should.be.true;
-    is.empty( [] ).should.be.true;
-    is.empty( {} ).should.be.true;
-
-  } );
-
-  it( "should check if a value is null or undefined", function () {
-
-    is.nullOrUndefined( null ).should.be.true;
-    is.nullOrUndefined( undefined ).should.be.true;
-    is.nullOrUndefined( void 0 ).should.be.true;
-    is.nullOrUndefined( "null" ).should.be.false;
-    is.nullOrUndefined( "undefined" ).should.be.false;
-    is.nullOrUndefined( 0 ).should.be.false;
-    is.nullOrUndefined( false ).should.be.false;
-    is.nullOrUndefined( {} ).should.be.false;
+    } );
 
   } );
 
