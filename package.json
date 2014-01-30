@@ -1,6 +1,6 @@
 {
   "name": "sc-is",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Is helper (number, boolean etc)",
   "main": "index.js",
   "scripts": {
