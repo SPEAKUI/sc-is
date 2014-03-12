@@ -39,4 +39,5 @@ Object.keys( ises ).forEach( function ( key ) {
 
 } );
 
-module.exports = is;
+exports = module.exports = is;
+exports.type = type;
