@@ -21,7 +21,8 @@ var ises = {
   "string": [ "string", type( "string" ) ],
   "undefined": [ "undefined", type( "undefined" ) ],
   "empty": [ "empty", require( "./ises/empty" ) ],
-  "nullorundefined": [ "nullOrUndefined", "nullorundefined", require( "./ises/nullorundefined" ) ]
+  "nullorundefined": [ "nullOrUndefined", "nullorundefined", require( "./ises/nullorundefined" ) ],
+  "guid": [ "guid", require( "./ises/guid" ) ]
 }
 
 Object.keys( ises ).forEach( function ( key ) {

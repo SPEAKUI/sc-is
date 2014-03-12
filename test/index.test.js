@@ -70,6 +70,10 @@ var data = [ {
   name: [ "nullOrUndefined", "nullorundefined" ],
   valid: [ null, undefined, void 0 ],
   invalid: [ "null", "undefined", 0, -1, false ]
+}, {
+  name: "guid",
+  valid: [ "369e6d5b-cb7f-4b4d-90d0-1c462770e9f7", "{369e6d5b-cb7f-4b4d-90d0-1c462770e9f7}", "8a9c86bc-1125-4ec4-9aeb-a429fd7f8c7c", "7d1b397e-2cb3-4132-a2b1-6dcdde46946c" ],
+  invalid: [ "369e6d5b-cb7f-3b4d-90d0-1c462770e9f7", "369e6d5bcb7f4b4d90d01c462770e9f7", "null", "undefined", 0, -1, false ]
 } ]
 
 describe( "is", function () {
